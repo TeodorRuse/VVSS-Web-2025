@@ -6,14 +6,13 @@ import net.thucydides.core.annotations.Steps;
 import net.thucydides.junit.annotations.Qualifier;
 import net.thucydides.junit.annotations.UseTestDataFrom;
 import org.example.steps.serenity.EndUserSteps;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 
 @RunWith(SerenityParameterizedRunner.class)
 @UseTestDataFrom("src/test/resources/login_data.csv")
-public class LoginFunctionTest{
+public class LoginFunctionTest {
 
     @Managed(uniqueSession = true)
     public WebDriver webdriver;

@@ -27,8 +27,8 @@ public class SearchByKeywordStory {
         anna.logs_in_as("TestDA223", "parolaincorecta");
         anna.should_see_logged_user("TestDA223");
 
-        anna.looks_for("apple");
-        anna.should_see_page_title_contains("apple");
+        anna.looks_for("car");
+        anna.should_see_page_title_contains("car");
 
         anna.adds_current_page_to_watchlist();
         anna.should_see_page_added_to_watchlist();

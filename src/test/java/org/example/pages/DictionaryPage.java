@@ -2,22 +2,13 @@ package org.example.pages;
 
 import net.thucydides.core.annotations.DefaultUrl;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import net.serenitybdd.core.pages.WebElementFacade;
-
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import net.serenitybdd.core.annotations.findby.FindBy;
 import net.thucydides.core.pages.PageObject;
-import java.util.List;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
-@DefaultUrl("http://en.wiktionary.org/wiki/Wiktionary")
-//@DefaultUrl("https://en.wiktionary.org/wiki/Wiktionary:Main_Page")
-
+@DefaultUrl("https://en.wiktionary.org/wiki/Wiktionary:Main_Page")
 public class DictionaryPage extends PageObject {
 
     // Login
@@ -30,14 +21,18 @@ public class DictionaryPage extends PageObject {
     @FindBy(id = "wpLoginAttempt")
     WebElementFacade loginButton;
 
-    public void goToLoginPage() {
+    public void open_login_page() {
         getDriver().get("https://en.wiktionary.org/w/index.php?title=Special:UserLogin");
     }
 
+    public void goToLoginPage() {
+        open_login_page();
+    }
+
     public void loginAs(String username, String password) {
-        usernameField.waitUntilVisible().type(username);
-        passwordField.waitUntilVisible().type(password);
-        loginButton.click();
+        type_username(username);
+        type_password(password);
+        click_login_button();
     }
 
     // Search (body form)
@@ -66,7 +61,7 @@ public class DictionaryPage extends PageObject {
     }
 
     // Profile link
-    @FindBy(css = "#pt-userpage-2 a")
+    @FindBy(css = "#pt-userpage-2 ")
     private WebElementFacade userProfileLink;
 
     public void openProfilePage() {
@@ -90,29 +85,10 @@ public class DictionaryPage extends PageObject {
     }
 
     public String getPageSource() {
-        return getDriver().getPageSource(); // ✔ CORECT
+        return getDriver().getPageSource();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     //Login testing valid-nonvalid
-    // ✅ corect pentru Wikipedia
     public void type_username(String username) {
         $("#wpName1").type(username);
     }
@@ -142,13 +118,12 @@ public class DictionaryPage extends PageObject {
     }
 
     public void verify_login_error_displayed() {
-        // Selectorul actual corect conform mesajului tău
-        WebElementFacade errorMessage = $(".cdx-message__content");
-        errorMessage.waitUntilVisible(); // așteaptă să apară
-        errorMessage.shouldContainText("Incorrect username or password"); // verifică conținutul
-    }
-
-    public void open_login_page() {
-        getDriver().get("https://en.wiktionary.org/w/index.php?title=Special:UserLogin");
+        try {
+            WebElementFacade error = $(".cdx-message__content");
+            error.waitUntilVisible();
+            error.shouldContainText("Incorrect username or password");
+        } catch (Exception e) {
+            throw new AssertionError("Mesajul de eroare nu a fost afișat corect.", e);
+        }
     }
 }

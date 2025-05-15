@@ -3,14 +3,38 @@ package org.example.steps.serenity;
 import net.thucydides.core.annotations.Step;
 import net.thucydides.core.steps.ScenarioSteps;
 import org.example.pages.DictionaryPage;
-
-import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 
 public class EndUserSteps extends ScenarioSteps {
 
     DictionaryPage dictionaryPage;
+
+    @Step
+    public void is_the_login_page() {
+        dictionaryPage.open_login_page();
+    }
+
+    @Step
+    public void enter_login_credentials(String username, String password) {
+        dictionaryPage.type_username(username);
+        dictionaryPage.type_password(password);
+    }
+
+    @Step
+    public void submit_login() {
+        dictionaryPage.click_login_button();
+    }
+
+    @Step
+    public void should_see_logged_in_user(String username) {
+        dictionaryPage.verify_user_logged_in(username);
+    }
+
+    @Step
+    public void should_see_login_error() {
+        dictionaryPage.verify_login_error_displayed();
+    }
 
     @Step
     public void goes_to_login_page() {
@@ -55,37 +79,12 @@ public class EndUserSteps extends ScenarioSteps {
 
     @Step
     public void should_see_page_added_to_watchlist() {
-        assertTrue(dictionaryPage.isPageWatched(), "Pagina nu a fost adăugată la Watchlist!");
+        assertTrue(dictionaryPage.isPageWatched(), "Pagina nu a fost adaugata la Watchlist!");
     }
 
     private void assertTrue(boolean pageWatched, String s) {
-    }
-
-
-    // ✅ Login steps
-    @Step
-    public void is_the_login_page() {
-        dictionaryPage.open_login_page();
-    }
-
-    @Step
-    public void enter_login_credentials(String username, String password) {
-        dictionaryPage.type_username(username);
-        dictionaryPage.type_password(password);
-    }
-
-    @Step
-    public void submit_login() {
-        dictionaryPage.click_login_button();
-    }
-
-    @Step
-    public void should_see_logged_in_user(String username) {
-        dictionaryPage.verify_user_logged_in(username);
-    }
-
-    @Step
-    public void should_see_login_error() {
-        dictionaryPage.verify_login_error_displayed();
+        if (!pageWatched) {
+            throw new AssertionError(s);
+        }
     }
 }
