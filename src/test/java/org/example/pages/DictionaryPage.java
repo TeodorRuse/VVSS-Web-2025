@@ -16,28 +16,99 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 @DefaultUrl("http://en.wiktionary.org/wiki/Wiktionary")
+//@DefaultUrl("https://en.wiktionary.org/wiki/Wiktionary:Main_Page")
+
 public class DictionaryPage extends PageObject {
 
-    @FindBy(name="search")
+    // Login
+    @FindBy(id = "wpName1")
+    WebElementFacade usernameField;
+
+    @FindBy(id = "wpPassword1")
+    WebElementFacade passwordField;
+
+    @FindBy(id = "wpLoginAttempt")
+    WebElementFacade loginButton;
+
+    public void goToLoginPage() {
+        getDriver().get("https://en.wiktionary.org/w/index.php?title=Special:UserLogin");
+    }
+
+    public void loginAs(String username, String password) {
+        usernameField.waitUntilVisible().type(username);
+        passwordField.waitUntilVisible().type(password);
+        loginButton.click();
+    }
+
+    // Search (body form)
+    @FindBy(css = "form[name^='bodySearch'] input[name='search']")
     private WebElementFacade searchTerms;
 
-    @FindBy(name="go")
+    @FindBy(css = "form[name^='bodySearch'] input[type='submit']")
     private WebElementFacade lookupButton;
 
     public void enter_keywords(String keyword) {
-        searchTerms.waitUntilVisible().type(keyword);
+        searchTerms.waitUntilVisible().clear();
+        searchTerms.type(keyword);
     }
 
     public void lookup_terms() {
-        lookupButton.click();
+        lookupButton.waitUntilClickable().click();
     }
 
-    public List<String> getDefinitions() {
-        WebElementFacade definitionList = find(By.tagName("ol"));
-        return definitionList.findElements(By.tagName("li")).stream()
-                .map( element -> element.getText() )
-                .collect(Collectors.toList());
+    // Add to Watchlist
+    @FindBy(id = "ca-watch")
+    WebElementFacade watchButtonContainer;
+
+    public void addCurrentPageToWatchlist() {
+        WebElementFacade watchLink = watchButtonContainer.find(By.tagName("a"));
+        watchLink.waitUntilClickable().click();
     }
+
+    // Profile link
+    @FindBy(css = "#pt-userpage-2 a")
+    private WebElementFacade userProfileLink;
+
+    public void openProfilePage() {
+        userProfileLink.waitUntilClickable().click();
+    }
+
+    // Try exact match
+    @FindBy(css = "input[type='submit'][value='Try exact match']")
+    private WebElementFacade exactMatchButton;
+
+    public void clickExactMatch() {
+        exactMatchButton.waitUntilClickable().click();
+    }
+
+    public boolean isPageWatched() {
+        return getDriver().getPageSource().contains("Unwatch") || getDriver().getCurrentUrl().contains("action=unwatch");
+    }
+
+    public String getPageTitle() {
+        return getDriver().getTitle();
+    }
+
+    public String getPageSource() {
+        return getDriver().getPageSource(); // ✔ CORECT
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     //Login testing valid-nonvalid

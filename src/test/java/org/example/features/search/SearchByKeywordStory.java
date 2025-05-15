@@ -21,23 +21,23 @@ public class SearchByKeywordStory {
     @Steps
     public EndUserSteps anna;
 
-//    @Issue("#WIKI-1")
     @Test
-    public void searching_by_keyword_apple_should_display_the_corresponding_article() {
-        anna.is_the_home_page();
+    public void user_can_login_search_and_logout() {
+        anna.goes_to_login_page();
+        anna.logs_in_as("TestDA223", "parolaincorecta");
+        anna.should_see_logged_user("TestDA223");
+
         anna.looks_for("apple");
-        anna.should_see_definition("A common, round fruit produced by the tree Malus domestica, cultivated in temperate climates.");
+        anna.should_see_page_title_contains("apple");
 
+        anna.adds_current_page_to_watchlist();
+        anna.should_see_page_added_to_watchlist();
+
+        anna.opens_own_profile();
+        anna.should_see_page_title_contains("TestDA223");
+
+        anna.tries_exact_match();
+        anna.should_see_page_title_contains("User:TestDA223");
     }
 
-    @Test
-    public void searching_by_keyword_banana_should_display_the_corresponding_article() {
-        anna.is_the_home_page();
-        anna.looks_for("pear");
-        anna.should_see_definition("An edible fruit produced by the pear tree, similar to an apple but elongated towards the stem.");
-    }
-
-    @Pending @Test
-    public void searching_by_ambiguious_keyword_should_display_the_disambiguation_page() {
-    }
-} 
+}
